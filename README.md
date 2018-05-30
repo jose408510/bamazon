@@ -1,7 +1,7 @@
 # bamazon
 
 
-<img src="image1.png" height="200" width="200">
+<img src="images/image1.png" height="200" width="200">
 <img src="image2.png" height="200" width="200">
 <img src="image3.png" height="200" width="200">
 <img src="image4.png" height="200" width="200">
