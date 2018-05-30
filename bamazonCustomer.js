@@ -135,7 +135,7 @@ function buyItem() {
           message: "What product would you like to buy?"
         },
         {
-          name: "bid",
+          name: "quantity",
           type: "input",
           message: "How many would you like to buy ?"
         }
@@ -149,13 +149,16 @@ function buyItem() {
           }
         }
 
-        if (chosenItem.stock_quantity > parseInt(answer.bid)) {
-          // bid was high enough, so update db, let the user know, and start over
+        var quantityInt = parseInt(answer.quantity);
+
+        if (chosenItem.stock_quantity > quantityInt) {
+          
+          // quantity was high enough, so update db, let the user know, and start over
           connection.query(
             "UPDATE products SET ? WHERE ?",
             [
               {
-                stock_quantity: answer.bid
+                stock_quantity: chosenItem.stock_quantity - quantityInt
               },
               {
                 item_id: chosenItem.item_id
@@ -163,15 +166,20 @@ function buyItem() {
             ],
             function(error) {
               if (error) throw err;
-              console.log("you have successfully purchased!");
+              console.log("------------------------------")
+              console.log("------------------------------")
+              console.log("you have successfully purchased " + quantityInt + " " + answer.choice);
+              console.log("------------------------------")
+              console.log("------------------------------")
               start();
             }
           );
         }
         else {
-          // bid wasn't high enough, so apologize and start over
+          console.log("---------------------------------------");
           console.log("---------------------------------------");
           console.log("Sorry we Dont have that many in stock...");
+          console.log("---------------------------------------")
           console.log("---------------------------------------")
           start();
         }
