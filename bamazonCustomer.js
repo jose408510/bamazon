@@ -24,8 +24,8 @@ function start() {
     .prompt({
       name: "action",
       type: "list",
-      message: "Would you like to [BUY] or [ADD] or see [CHECK INVENTORY] or [LEAVE]?",
-      choices: ["BUY", "ADD","CHECK INVENTORY","LEAVE"]
+      message: "Would you like to [BUY] or [ADD] or see [CHECK INVENTORY] ?",
+      choices: ["BUY", "ADD","CHECK INVENTORY"]
     })
     .then(function(answer) {
       if (answer.action.toUpperCase() === "ADD") {
@@ -37,9 +37,9 @@ function start() {
       else if(answer.action.toUpperCase() === "CHECK INVENTORY"){
         inventoryItem();
       }
-      else{
-        laterDude();
-      }
+      // else{
+      //   laterDude();
+      // }
     });
 }
 
@@ -93,10 +93,10 @@ function addItem() {
 
 function inventoryItem(answer){
   console.log("")
-  connection.query("SELECT * from products", function (error, res) {
+  connection.query("SELECT * FROM products", function (error, res) {
     var table = new Table ({
       head: [ "item_id","department_name", "product_name", "price", "stock_quantity"],
-      colWidths: [20, 20, 8, 15]
+      colWidths: [20, 20, 15, 8, 20 ]
     });
     if (error) {
       console.log(error);
@@ -108,87 +108,46 @@ function inventoryItem(answer){
     };
     console.log(table.toString());
   });
-   
+  connection.end();
 }
 
-// function inventoryItem() {
-//   console.log("")
-//   connection.query("SELECT * FROM products", function(err, res) {
-//     var table = new Table ({
-//       head: [ "department_name", "product_name", "price", "stock_quantity"],
-//       colWidths: [15, 15, 5, 15]
-//     });
-
-//     if (err) {
-//       console.log(err);
-//     };
-//     for (var i = 0; i < res.length; i++) {
-//       table.push(
-//         [ res[i].department_name, res[i].product_name, res[i].price, res[i].stock_quantity]
-//       );
-//     };
-//     console.log(table.toString());
-//   });
-
-// };
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function buyItem() {
-//   // query the database for all items being auctioned
-//   connection.query("SELECT * FROM products", function(err, results) {
-//     if (err) throw err;
-//     // once you have the items, prompt the user for which they'd like to bid on
-//     inquirer
-//       .prompt([
-//         {
-//           name: "choice",
-//           type: "rawlist",
-//           choices: function() {
-//             var choiceArray = [];
-//             for (var i = 0; i < results.length; i++) {
-//               choiceArray.push(results[i].product_name);
-//             }
-//             return choiceArray;
-//           },
-//           message: "What auction would you like to place a bid in?"
-//         },
-//         {
-//           name: "bid",
-//           type: "input",
-//           message: "How much would you like to bid?"
-//         }
-//       ])
-//       .then(function(answer) {
-//         // get the information of the chosen item
-//         var chosenItem;
-//         for (var i = 0; i < results.length; i++) {
-//           if (results[i].item_name === answer.choice) {
-//             chosenItem = results[i];
-//           }
-//         }
+function buyItem() {
+  // query the database for all items being auctioned
+  connection.query("SELECT * FROM products", function(err, results) {
+    if (err) throw err;
+    // once you have the items, prompt the user for which they'd like to bid on
+    inquirer
+      .prompt([
+        {
+          name: "choice",
+          type: "list",
+          choices: function() {
+            var choiceArray = [];
+            for (var i = 0; i < results.length; i++) {
+              choiceArray.push(results[i].product_name);
+            }
+            return choiceArray;
+          },
+          message: "What product would you like to buy?"
+        },
+        {
+          name: "bid",
+          type: "input",
+          message: "How many would you like to buy ?"
+        }
+      ])
+      .then(function(answer) {
+        // get the information of the chosen item
+        var chosenItem;
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].product_name === answer.choice) {
+            chosenItem = results[i];
+          }
+        }
 
 //         // determine if bid was high enough
 //         if (chosenItem.highest_bid < parseInt(answer.bid)) {
@@ -215,14 +174,6 @@ function inventoryItem(answer){
 //           console.log("Your bid was too low. Try again...");
 //           start();
 //         }
-//       });
-//   });
-// }
-
-
-
-// function laterDude(){
-//   console.log("-------------------------")
-//   Console.log("GoodBye Come back Later when you want to add or buy and item!")
-//   console.log("-------------------------")
-//   };
+      });
+  });
+}
