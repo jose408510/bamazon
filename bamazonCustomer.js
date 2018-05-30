@@ -84,7 +84,11 @@ function addItem() {
         },
         function(err) {
           if (err) throw err;
+          console.log("------------------------------------------")
+          console.log("------------------------------------------")
           console.log("Your item has been added to our inventory!");
+          console.log("------------------------------------------")
+          console.log("------------------------------------------")
           start();
         }
       );
