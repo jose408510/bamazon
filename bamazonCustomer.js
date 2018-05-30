@@ -1,75 +1,228 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table');
 
 var connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "",
   database: "bamazon"
 });
 
 connection.connect(function(err) {
   if (err) throw err;
-  runSearch();
+  // run the start function after the connection is made to prompt the user
+  start();
 });
 
-function runSearch() {
+function start() {
   inquirer
     .prompt({
       name: "action",
-      type: "rawlist",
-      message: "What would you like to do?",
-      choices: [
-        "what Product would you like to buy?",
-        "Find artists with a top song and top album in the same year"
-      ]
+      type: "list",
+      message: "Would you like to [BUY] or [ADD] or see [CHECK INVENTORY] or [LEAVE]?",
+      choices: ["BUY", "ADD","CHECK INVENTORY","LEAVE"]
     })
     .then(function(answer) {
-      switch (answer.action) {
-      case "Find songs by artist":
-        artistSearch();
-        break;
-
-      case "Find all artists who appear more than once":
-        multiSearch();
-        break;
-
-      case "Find data within a specific range":
-        rangeSearch();
-        break;
-
-      case "Search for a specific song":
-        songSearch();
-        break;
-
-      case "Find artists with a top song and top album in the same year":
-        songAndAlbumSearch();
-        break;
+      if (answer.action.toUpperCase() === "ADD") {
+        addItem();
+      }
+      else if(answer.action.toUpperCase() === "BUY") {
+        buyItem();
+      }
+      else if(answer.action.toUpperCase() === "CHECK INVENTORY"){
+        inventoryItem();
+      }
+      else{
+        laterDude();
       }
     });
 }
 
-function artistSearch() {
+function addItem() {
   inquirer
-    .prompt({
-      name: "artist",
-      type: "input",
-      message: "What artist would you like to search for?"
-    })
-    .then(function(answer) {
-      var query = "SELECT position, song, year FROM top5000 WHERE ?";
-      connection.query(query, { artist: answer.artist }, function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-          console.log("Position: " + res[i].position + " || Song: " + res[i].song + " || Year: " + res[i].year);
+    .prompt([
+      {
+        name: "dept",
+        type: "input",
+        message: "What department would you like to place your item in?"
+      },
+      {
+        name: "product",
+        type: "input",
+        message: "What is the name of this Product?"
+      },
+      {
+        name: "price",
+        type: "input",
+        message: "What price would you like to put on this item?"
+      },
+      {
+        name: "stock",
+        type: "input",
+        message: "How many would you like to throw in inventory",
+        validate: function(value) {
+          if (!isNaN(value)) {
+            return true;
+          }
+          return false;
         }
-        runSearch();
-      });
+      }
+    ])
+    .then(function(answer) {
+      connection.query(
+        "INSERT INTO products SET ?",
+        {
+          department_name: answer.dept,
+          product_name: answer.product,
+          price: answer.price,
+          stock_quantity: answer.stock
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("Your item has been added to our inventory!");
+          start();
+        }
+      );
     });
 }
+
+function inventoryItem(answer){
+  console.log("")
+  connection.query("SELECT * from products", function (error, res) {
+    var table = new Table ({
+      head: [ "item_id","department_name", "product_name", "price", "stock_quantity"],
+      colWidths: [20, 20, 8, 15]
+    });
+    if (error) {
+      console.log(error);
+    };
+    for (var i = 0; i < res.length; i++) {
+      table.push(
+        [ res[i].item_id ,res[i].department_name, res[i].product_name, res[i].price, res[i].stock_quantity]
+      );
+    };
+    console.log(table.toString());
+  });
+   
+}
+
+// function inventoryItem() {
+//   console.log("")
+//   connection.query("SELECT * FROM products", function(err, res) {
+//     var table = new Table ({
+//       head: [ "department_name", "product_name", "price", "stock_quantity"],
+//       colWidths: [15, 15, 5, 15]
+//     });
+
+//     if (err) {
+//       console.log(err);
+//     };
+//     for (var i = 0; i < res.length; i++) {
+//       table.push(
+//         [ res[i].department_name, res[i].product_name, res[i].price, res[i].stock_quantity]
+//       );
+//     };
+//     console.log(table.toString());
+//   });
+
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function buyItem() {
+//   // query the database for all items being auctioned
+//   connection.query("SELECT * FROM products", function(err, results) {
+//     if (err) throw err;
+//     // once you have the items, prompt the user for which they'd like to bid on
+//     inquirer
+//       .prompt([
+//         {
+//           name: "choice",
+//           type: "rawlist",
+//           choices: function() {
+//             var choiceArray = [];
+//             for (var i = 0; i < results.length; i++) {
+//               choiceArray.push(results[i].product_name);
+//             }
+//             return choiceArray;
+//           },
+//           message: "What auction would you like to place a bid in?"
+//         },
+//         {
+//           name: "bid",
+//           type: "input",
+//           message: "How much would you like to bid?"
+//         }
+//       ])
+//       .then(function(answer) {
+//         // get the information of the chosen item
+//         var chosenItem;
+//         for (var i = 0; i < results.length; i++) {
+//           if (results[i].item_name === answer.choice) {
+//             chosenItem = results[i];
+//           }
+//         }
+
+//         // determine if bid was high enough
+//         if (chosenItem.highest_bid < parseInt(answer.bid)) {
+//           // bid was high enough, so update db, let the user know, and start over
+//           connection.query(
+//             "UPDATE products SET ? WHERE ?",
+//             [
+//               {
+//                 highest_bid: answer.bid
+//               },
+//               {
+//                 id: chosenItem.id
+//               }
+//             ],
+//             function(error) {
+//               if (error) throw err;
+//               console.log("Bid placed successfully!");
+//               start();
+//             }
+//           );
+//         }
+//         else {
+//           // bid wasn't high enough, so apologize and start over
+//           console.log("Your bid was too low. Try again...");
+//           start();
+//         }
+//       });
+//   });
+// }
+
+
+
+// function laterDude(){
+//   console.log("-------------------------")
+//   Console.log("GoodBye Come back Later when you want to add or buy and item!")
+//   console.log("-------------------------")
+//   };
