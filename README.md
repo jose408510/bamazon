@@ -12,9 +12,9 @@ The following instructions will guide you throught the necessary steps to runnin
 
 <h1>Photo Examples Below:</h1>
 
-Navigate to the appropriate directory, and "npm init" (initialize npm and create JSON files), then install the npm packages using command line.
+<p>Navigate to the appropriate directory, and "npm init" (initialize npm and create JSON files), then install the npm packages using command line.</p>
 <img src="images/image3.png"> 
-Navigate to the appropriate directory and "npm i" (install) all the packages in the JSON file.
+<p>Navigate to the appropriate directory and "npm i" (install) all the packages in the JSON file.</p>
 <img src="images/image2.png"> 
 
 <img src="images/image4.png">  
