@@ -18,13 +18,13 @@ The following instructions will guide you throught the necessary steps to runnin
 <img src="images/image2.png"> 
 
 <img src="images/image4.png">  
-
+<p> Upload all of are data to the database that we need to create on the mysql terminal on your computer</p>
 <img src="images/image6.png"> 
-
+<p> Now we can run this on node</p>
 <img src="images/image5.png"> 
-
+<p>Here are the three starting options given at the beginning of the bamazon application </p>
 <img src="images/image7.png"> 
-
+<p> </p>
 <img src="images/image8.png"> 
 
 <img src="images/image11.png"> 
