@@ -1,17 +1,17 @@
 # bamazon
 
 
-<img src="images/image1.png" height="200" width="200">
-<img src="image2.png" height="200" width="200">
-<img src="image3.png" height="200" width="200">
-<img src="image4.png" height="200" width="200">
-<img src="image5.png" height="200" width="200">
-<img src="image6.png" height="200" width="200">
-<img src="image7.png" height="200" width="200">
-<img src="image8.png" height="200" width="200">
-<img src="image9.png" height="200" width="200">
-<img src="image10.png" height="200" width="200">
-<img src="image11.png" height="200" width="200">
-<img src="image12.png" height="200" width="200">
-<img src="image13.png" height="200" width="200">
-<img src="image14.png" height="200" width="200">
+<img src="images/image1.png">
+<img src="images/image2.png">
+<img src="images/image3.png">
+<img src="images/image4.png">
+<img src="images/image5.png">
+<img src="images/image6.png">
+<img src="images/image7.png">
+<img src="images/image8.png">
+<img src="images/image9.png">
+<img src="images/image10.png">
+<img src="images/image11.png">
+<img src="images/image12.png">
+<img src="images/image13.png">
+<img src="images/image14.png">
